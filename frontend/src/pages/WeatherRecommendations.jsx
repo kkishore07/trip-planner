@@ -4,8 +4,8 @@ import { recommendationService } from '../services/recommendationService';
 import { CloudSun, Search, Star, MapPin, Wind, Droplets, Compass, Sparkles } from 'lucide-react';
 
 export const WeatherRecommendations = () => {
-  const [city, setCity] = useState('Paris');
-  const [searchQuery, setSearchQuery] = useState('Paris');
+  const [city, setCity] = useState('Munnar');
+  const [searchQuery, setSearchQuery] = useState('Munnar');
   const [weather, setWeather] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
   const [category, setCategory] = useState('ALL');
@@ -57,7 +57,7 @@ export const WeatherRecommendations = () => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search city (e.g. Tokyo)"
+              placeholder="Search city (e.g. Munnar, Ooty, Jaipur)"
               className="w-full pl-10 pr-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl text-xs text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-500"
             />
           </div>

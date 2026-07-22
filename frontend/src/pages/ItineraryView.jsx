@@ -42,9 +42,22 @@ export const ItineraryView = () => {
 
   const getStops = () => {
     if (!trip || !trip.itineraries) return [];
-    if (trip.destination.toLowerCase().includes('coimbatore') && trip.destination.toLowerCase().includes('munnar')) {
+    const destL = trip.destination.toLowerCase();
+    const fromL = (trip.fromPlace || "").toLowerCase();
+
+    if (destL.includes('munnar') || (fromL.includes('coimbatore') && destL.includes('munnar'))) {
       return ["Pollachi", "Udumalpet", "Chinnar Wildlife Sanctuary", "Marayoor"];
     }
+    if (destL.includes('ooty') || (fromL.includes('bangalore') && destL.includes('ooty'))) {
+      return ["Mysore", "Bandipur National Park", "Mudumalai Forest", "Pykara Lake"];
+    }
+    if (destL.includes('jaipur') || (fromL.includes('delhi') && destL.includes('jaipur'))) {
+      return ["Gurgaon", "Neemrana", "Shahpura", "Amber Fort"];
+    }
+    if (destL.includes('lonavala') || (fromL.includes('mumbai') && destL.includes('lonavala'))) {
+      return ["Navi Mumbai", "Khopoli", "Khandala Ghat", "Karla Caves"];
+    }
+
     const stopsSet = new Set();
     trip.itineraries.forEach(day => {
       if (day.attractions) {
@@ -57,6 +70,30 @@ export const ItineraryView = () => {
       }
     });
     return Array.from(stopsSet).slice(0, 4);
+  };
+
+  const renderPlacePills = (placesString) => {
+    if (!placesString) return <span className="text-gray-400">None</span>;
+    const places = placesString.split(',').map(p => p.trim()).filter(Boolean);
+    return (
+      <div className="flex flex-wrap gap-1.5 mt-1.5">
+        {places.map((place, idx) => {
+          const queryName = place.replace(/\(⭐\s*\d+(\.\d+)?\)/g, '').trim();
+          return (
+            <a
+              key={idx}
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryName)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 px-2.5 py-1 bg-brand-500/5 hover:bg-brand-500/10 text-brand-600 dark:text-brand-400 text-[10px] font-bold rounded-lg border border-brand-500/10 hover:border-brand-500/20 transition-all cursor-pointer"
+            >
+              <MapPin className="w-3 h-3 text-brand-500" />
+              <span>{place}</span>
+            </a>
+          );
+        })}
+      </div>
+    );
   };
 
   if (loading) return <div className="max-w-6xl mx-auto p-8"><SkeletonLoader count={3} /></div>;
@@ -102,6 +139,9 @@ export const ItineraryView = () => {
           </div>
         </div>
       </div>
+
+      {/* Full-Width Route Map */}
+      <InteractiveMap destination={trip.destination} origin={trip.fromPlace} stops={getStops()} />
 
       {/* Map & Day Itinerary Split Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -149,14 +189,14 @@ export const ItineraryView = () => {
                         <h4 className="text-xs font-bold text-gray-900 dark:text-white mb-1 flex items-center gap-1.5">
                           <MapPin className="w-3.5 h-3.5 text-brand-500" /> Planned Activities
                         </h4>
-                        <p className="text-xs text-gray-600 dark:text-gray-300">{day.activities}</p>
+                        {renderPlacePills(day.activities)}
                       </div>
 
                       <div className="bg-gray-50 dark:bg-gray-800/50 p-3.5 rounded-xl border border-gray-200/50 dark:border-gray-700/50">
                         <h4 className="text-xs font-bold text-gray-900 dark:text-white mb-1 flex items-center gap-1.5">
                           <Utensils className="w-3.5 h-3.5 text-amber-500" /> Dining & Local Spots
                         </h4>
-                        <p className="text-xs text-gray-600 dark:text-gray-300">{day.restaurants}</p>
+                        {renderPlacePills(day.restaurants)}
                       </div>
                     </div>
 
@@ -177,6 +217,8 @@ export const ItineraryView = () => {
                             if (isDrive) iconBg = "bg-indigo-500/10 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400";
                             if (isForest) iconBg = "bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400";
                             
+                            const queryName = evt.title.replace(/\(⭐\s*\d+(\.\d+)?\)/g, '').trim();
+
                             return (
                               <div key={idx} className="relative group">
                                 <span className={`absolute -left-[35px] top-0.5 rounded-full p-1.5 flex items-center justify-center border-4 border-white dark:border-gray-900 shadow-sm transition-transform group-hover:scale-110 ${iconBg}`}>
@@ -188,9 +230,15 @@ export const ItineraryView = () => {
                                     <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-brand-500/10 text-brand-600 dark:text-brand-400 border border-brand-500/20">
                                       {evt.time}
                                     </span>
-                                    <h5 className="text-xs font-bold text-gray-900 dark:text-white group-hover:text-brand-500 transition-colors">
+                                    <a
+                                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryName)}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-xs font-bold text-gray-900 dark:text-white hover:text-brand-500 dark:hover:text-brand-400 hover:underline flex items-center gap-1 cursor-pointer"
+                                      title="Search on Google Maps"
+                                    >
                                       {evt.title}
-                                    </h5>
+                                    </a>
                                   </div>
                                   <p className="text-[11px] text-gray-500 dark:text-gray-450 leading-relaxed whitespace-pre-line pl-1">
                                     {evt.details}
@@ -203,9 +251,12 @@ export const ItineraryView = () => {
                       </div>
                     )}
 
-                    <div className="flex justify-between items-center pt-2 text-xs text-gray-500 dark:text-gray-400">
-                      <span>Key Attraction: <strong>{day.attractions}</strong></span>
-                      <span className="font-bold text-emerald-600 dark:text-emerald-400">Est. Cost: {formatAmount(day.estimatedCost)}</span>
+                    <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 pt-2 text-xs text-gray-500 dark:text-gray-400">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span>Key Attractions:</span>
+                        {renderPlacePills(day.attractions)}
+                      </div>
+                      <span className="font-bold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">Est. Cost: {formatAmount(day.estimatedCost)}</span>
                     </div>
                   </div>
                 );
@@ -214,10 +265,8 @@ export const ItineraryView = () => {
           )}
         </div>
 
-        {/* Sidebar Interactive Map & Expense Summary */}
+        {/* Sidebar Expense Summary */}
         <div className="space-y-6">
-          <InteractiveMap destination={trip.destination} stops={getStops()} />
-
           <div className="glass-card rounded-2xl p-6 space-y-4">
             <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
               <DollarSign className="w-4 h-4 text-emerald-500" /> Financial Summary

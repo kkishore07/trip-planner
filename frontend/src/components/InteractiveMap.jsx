@@ -1,32 +1,41 @@
 import React from 'react';
 import { MapPin, Navigation, Compass } from 'lucide-react';
 
-export const InteractiveMap = ({ destination = "Paris", stops = [] }) => {
+export const InteractiveMap = ({ destination = "Munnar", origin = "", stops = [] }) => {
   let mapSrc = "";
-  const routeMatch = destination.match(/(.+?)\s+to\s+(.+)/i);
   
-  if (routeMatch) {
-    const origin = routeMatch[1].trim();
-    const finalDest = routeMatch[2].trim();
+  if (origin && destination) {
     if (stops && stops.length > 0) {
       const waypointsStr = stops.map(s => encodeURIComponent(s.trim())).join('+to:');
-      mapSrc = `https://maps.google.com/maps?saddr=${encodeURIComponent(origin)}&daddr=${waypointsStr}+to:${encodeURIComponent(finalDest)}&t=&z=10&ie=UTF8&iwloc=&output=embed`;
+      mapSrc = `https://maps.google.com/maps?saddr=${encodeURIComponent(origin)}&daddr=${waypointsStr}+to:${encodeURIComponent(destination)}&t=&z=10&ie=UTF8&iwloc=&output=embed`;
     } else {
-      mapSrc = `https://maps.google.com/maps?saddr=${encodeURIComponent(origin)}&daddr=${encodeURIComponent(finalDest)}&t=&z=10&ie=UTF8&iwloc=&output=embed`;
-    }
-  } else if (stops && stops.length > 1) {
-    const origin = stops[0];
-    const finalDest = stops[stops.length - 1];
-    const midStops = stops.slice(1, -1);
-    if (midStops.length > 0) {
-      const waypointsStr = midStops.map(s => encodeURIComponent(s.trim())).join('+to:');
-      mapSrc = `https://maps.google.com/maps?saddr=${encodeURIComponent(origin)}&daddr=${waypointsStr}+to:${encodeURIComponent(finalDest)}&t=&z=10&ie=UTF8&iwloc=&output=embed`;
-    } else {
-      mapSrc = `https://maps.google.com/maps?saddr=${encodeURIComponent(origin)}&daddr=${encodeURIComponent(finalDest)}&t=&z=10&ie=UTF8&iwloc=&output=embed`;
+      mapSrc = `https://maps.google.com/maps?saddr=${encodeURIComponent(origin)}&daddr=${encodeURIComponent(destination)}&t=&z=10&ie=UTF8&iwloc=&output=embed`;
     }
   } else {
-    const encodedDest = encodeURIComponent(destination);
-    mapSrc = `https://maps.google.com/maps?q=${encodedDest}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
+    const routeMatch = destination.match(/(.+?)\s+to\s+(.+)/i);
+    if (routeMatch) {
+      const parsedOrigin = routeMatch[1].trim();
+      const finalDest = routeMatch[2].trim();
+      if (stops && stops.length > 0) {
+        const waypointsStr = stops.map(s => encodeURIComponent(s.trim())).join('+to:');
+        mapSrc = `https://maps.google.com/maps?saddr=${encodeURIComponent(parsedOrigin)}&daddr=${waypointsStr}+to:${encodeURIComponent(finalDest)}&t=&z=10&ie=UTF8&iwloc=&output=embed`;
+      } else {
+        mapSrc = `https://maps.google.com/maps?saddr=${encodeURIComponent(parsedOrigin)}&daddr=${encodeURIComponent(finalDest)}&t=&z=10&ie=UTF8&iwloc=&output=embed`;
+      }
+    } else if (stops && stops.length > 1) {
+      const parsedOrigin = stops[0];
+      const finalDest = stops[stops.length - 1];
+      const midStops = stops.slice(1, -1);
+      if (midStops.length > 0) {
+        const waypointsStr = midStops.map(s => encodeURIComponent(s.trim())).join('+to:');
+        mapSrc = `https://maps.google.com/maps?saddr=${encodeURIComponent(parsedOrigin)}&daddr=${waypointsStr}+to:${encodeURIComponent(finalDest)}&t=&z=10&ie=UTF8&iwloc=&output=embed`;
+      } else {
+        mapSrc = `https://maps.google.com/maps?saddr=${encodeURIComponent(parsedOrigin)}&daddr=${encodeURIComponent(finalDest)}&t=&z=10&ie=UTF8&iwloc=&output=embed`;
+      }
+    } else {
+      const encodedDest = encodeURIComponent(destination);
+      mapSrc = `https://maps.google.com/maps?q=${encodedDest}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
+    }
   }
 
   return (
@@ -41,7 +50,7 @@ export const InteractiveMap = ({ destination = "Paris", stops = [] }) => {
         </span>
       </div>
 
-      <div className="w-full h-64 rounded-xl overflow-hidden shadow-inner relative border border-gray-300 dark:border-gray-700 bg-gray-900">
+      <div className="w-full h-[450px] rounded-xl overflow-hidden shadow-inner relative border border-gray-300 dark:border-gray-700 bg-gray-900">
         <iframe
           title={`Map of ${destination}`}
           width="100%"

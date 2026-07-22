@@ -37,6 +37,7 @@ public class TripServiceImpl implements TripService {
         Trip trip = Trip.builder()
                 .user(user)
                 .destination(request.getDestination())
+                .fromPlace(request.getFromPlace())
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
                 .travelersCount(request.getTravelersCount())
@@ -72,6 +73,7 @@ public class TripServiceImpl implements TripService {
                 .orElseThrow(() -> new ResourceNotFoundException("Trip not found with ID: " + tripId));
 
         trip.setDestination(request.getDestination());
+        trip.setFromPlace(request.getFromPlace());
         trip.setStartDate(request.getStartDate());
         trip.setEndDate(request.getEndDate());
         trip.setTravelersCount(request.getTravelersCount());
@@ -104,10 +106,11 @@ public class TripServiceImpl implements TripService {
         Trip trip = Trip.builder()
                 .user(user)
                 .destination(request.getDestination())
+                .fromPlace(request.getFromPlace())
                 .startDate(java.time.LocalDate.now())
                 .endDate(java.time.LocalDate.now().plusDays(duration))
                 .travelersCount(request.getTravelersCount())
-                .travelMode("Flight")
+                .travelMode(request.getTravelMode() != null ? request.getTravelMode() : "Flight")
                 .travelPreferences(request.getPreferences())
                 .budget(request.getBudget() != null ? request.getBudget() : new BigDecimal("1000.00"))
                 .totalExpense(BigDecimal.ZERO)
@@ -124,6 +127,7 @@ public class TripServiceImpl implements TripService {
         TripDTOs.TripResponse response = new TripDTOs.TripResponse();
         response.setId(trip.getId());
         response.setDestination(trip.getDestination());
+        response.setFromPlace(trip.getFromPlace());
         response.setStartDate(trip.getStartDate());
         response.setEndDate(trip.getEndDate());
         response.setTravelersCount(trip.getTravelersCount());

@@ -1,13 +1,13 @@
 import api from './api';
 
 export const weatherService = {
-  getWeather: async (city = 'Paris') => {
+  getWeather: async (city = 'Munnar') => {
     try {
       const response = await api.get('/weather', { params: { city } });
       return response.data;
     } catch (err) {
       return {
-        city: city || 'Paris',
+        city: city || 'Munnar',
         temperature: 24,
         humidity: 60,
         windSpeed: 12.5,

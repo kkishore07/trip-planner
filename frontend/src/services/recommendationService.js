@@ -115,49 +115,49 @@ export const recommendationService = {
             id: 1,
             destinationName: dest,
             category: "ATTRACTIONS",
-            title: "Grand Heritage Plaza & Towers",
-            description: "Stunning central landmark offering breathtaking city vistas and architectural walking tours.",
+            title: "Taj Mahal & Heritage Complex",
+            description: "The iconic white marble mausoleum, globally recognized as a monument of love and architectural marvel.",
             rating: 4.9,
-            address: `Central Promenade, ${dest}`,
-            imageUrl: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=600&q=80",
-            reviewCount: 15200,
-            reviewSnippet: "Absolutely gorgeous at sunset! A must visit historic monument with rich culture."
+            address: `Agra, Uttar Pradesh, India`,
+            imageUrl: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=600&q=80",
+            reviewCount: 185000,
+            reviewSnippet: "Stunningly beautiful! Seeing the sunrise over the white marble of the Taj Mahal is a lifetime experience."
           },
           {
             id: 2,
             destinationName: dest,
             category: "RESTAURANTS",
-            title: "L'Etoile Gourmet Bistro",
-            description: "Michelin guide culinary gem famous for handmade pasta, organic wine pairing, and rooftop seating.",
-            rating: 4.8,
-            address: `Gastronomy Way 44, ${dest}`,
-            imageUrl: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80",
-            reviewCount: 8920,
-            reviewSnippet: "Outstanding tasting menu and the rooftop views are incredible. Highly recommend the chef specials."
+            title: "Punjab Dhaba & Curry House",
+            description: "Highly rated authentic roadside dhaba serving slow-cooked dal makhani, butter paneer, and hot garlic naan.",
+            rating: 4.6,
+            address: `GT Road, NH 1, India`,
+            imageUrl: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=600&q=80",
+            reviewCount: 12400,
+            reviewSnippet: "Amazing butter chicken and slow-cooked dal makhani. Very traditional taste and huge portions!"
           },
           {
             id: 3,
             destinationName: dest,
             category: "MUSEUMS",
-            title: "Modern & Classical Art Gallery",
-            description: "World-class collection of classical paintings, modern sculptures, and immersive digital exhibits.",
-            rating: 4.7,
-            address: `Museum Avenue 12, ${dest}`,
-            imageUrl: "https://images.unsplash.com/photo-1565008447742-97f6f38c985c?auto=format&fit=crop&w=600&q=80",
-            reviewCount: 6450,
-            reviewSnippet: "Super informative exhibits. The modern sculpture wing and digital art rooms are a masterpiece."
+            title: "National Indian Heritage Museum",
+            description: "Vast gallery housing artifacts from ancient Indus Valley civilizations, royal weaponry, and paintings.",
+            rating: 4.5,
+            address: `Janpath Road, New Delhi, India`,
+            imageUrl: "https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?auto=format&fit=crop&w=600&q=80",
+            reviewCount: 8250,
+            reviewSnippet: "Fascinating walk through thousands of years of Indian history. The Harappan civilization gallery is a must see."
           },
           {
             id: 4,
             destinationName: dest,
             category: "PARKS",
-            title: "Royal Botanical Sanctuary",
-            description: "Serene urban park featuring glass conservatories, swan ponds, and peaceful shaded trail paths.",
-            rating: 4.9,
-            address: `Park Drive 8, ${dest}`,
-            imageUrl: "https://images.unsplash.com/photo-1519331379826-f10be5486c6f?auto=format&fit=crop&w=600&q=80",
-            reviewCount: 11200,
-            reviewSnippet: "A peaceful botanical garden. Perfect place to relax with family and take photos of exotic orchids."
+            title: "Sanjay Gandhi National Park & Reserves",
+            description: "Lush tropical green forest reserve featuring ancient rock-cut Kanheri Caves and tiger safaris.",
+            rating: 4.4,
+            address: `Borivali East, Mumbai, Maharashtra`,
+            imageUrl: "https://images.unsplash.com/photo-1500627869374-13cd993b1115?auto=format&fit=crop&w=600&q=80",
+            reviewCount: 14300,
+            reviewSnippet: "A peaceful green escape right inside the metropolis. Exploring the ancient Buddhist caves is highly recommended."
           }
         ];
       }

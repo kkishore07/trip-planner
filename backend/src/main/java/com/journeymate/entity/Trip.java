@@ -28,6 +28,8 @@ public class Trip {
     @Column(nullable = false)
     private String destination;
 
+    private String fromPlace;
+
     private LocalDate startDate;
 
     private LocalDate endDate;

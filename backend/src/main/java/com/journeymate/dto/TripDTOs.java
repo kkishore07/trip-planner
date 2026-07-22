@@ -14,6 +14,8 @@ public class TripDTOs {
         @NotBlank(message = "Destination is required")
         private String destination;
 
+        private String fromPlace;
+
         @NotNull(message = "Start date is required")
         private LocalDate startDate;
 
@@ -30,6 +32,7 @@ public class TripDTOs {
     public static class TripResponse {
         private Long id;
         private String destination;
+        private String fromPlace;
         private LocalDate startDate;
         private LocalDate endDate;
         private Integer travelersCount;
@@ -60,6 +63,8 @@ public class TripDTOs {
     public static class GenerateItineraryRequest {
         @NotBlank(message = "Destination is required")
         private String destination;
+        private String fromPlace;
+        private String travelMode;
         private Integer durationDays = 3;
         private Integer travelersCount = 1;
         private String preferences = "Adventure & Food";

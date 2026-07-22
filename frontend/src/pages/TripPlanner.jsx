@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { tripService } from '../services/tripService';
-import { Compass, Sparkles, Calendar, DollarSign, Users, Plane, Heart, ArrowRight } from 'lucide-react';
+import { Compass, Sparkles, Calendar, DollarSign, Users, Plane, Heart, ArrowRight, MapPin, Car } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export const TripPlanner = () => {
@@ -11,11 +11,13 @@ export const TripPlanner = () => {
 
   // AI Form state
   const [aiForm, setAiForm] = useState({
-    destination: 'Rome, Italy',
-    durationDays: 4,
+    destination: 'Munnar, Kerala',
+    fromPlace: 'Coimbatore, Tamil Nadu',
+    travelMode: 'Car / Roadtrip',
+    durationDays: 1,
     travelersCount: 2,
-    preferences: 'Culture, Fine Dining & History',
-    budget: 150000,
+    preferences: 'Adventure & Food',
+    budget: 15000,
   });
 
   // Manual Form state
@@ -105,6 +107,23 @@ export const TripPlanner = () => {
             
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-2">
+                Starting Location (From)
+              </label>
+              <div className="relative">
+                <MapPin className="w-5 h-5 absolute left-3.5 top-3.5 text-gray-400" />
+                <input
+                  type="text"
+                  required
+                  value={aiForm.fromPlace}
+                  onChange={(e) => setAiForm({ ...aiForm, fromPlace: e.target.value })}
+                  placeholder="e.g. Coimbatore, Tamil Nadu"
+                  className="w-full pl-11 pr-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 text-gray-900 dark:text-white"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-2">
                 Destination City / Country
               </label>
               <div className="relative">
@@ -114,9 +133,28 @@ export const TripPlanner = () => {
                   required
                   value={aiForm.destination}
                   onChange={(e) => setAiForm({ ...aiForm, destination: e.target.value })}
-                  placeholder="e.g. Paris, Tokyo, Bali, New York"
+                  placeholder="e.g. Munnar, Kerala"
                   className="w-full pl-11 pr-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 text-gray-900 dark:text-white"
                 />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-2">
+                Mode of Transportation
+              </label>
+              <div className="relative">
+                <Car className="w-5 h-5 absolute left-3.5 top-3.5 text-gray-400" />
+                <select
+                  value={aiForm.travelMode}
+                  onChange={(e) => setAiForm({ ...aiForm, travelMode: e.target.value })}
+                  className="w-full pl-11 pr-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 text-gray-900 dark:text-white"
+                >
+                  <option value="Car / Roadtrip">🚗 Car / Roadtrip</option>
+                  <option value="Bus">🚌 Bus</option>
+                  <option value="Train">🚂 Train</option>
+                  <option value="Flight">✈️ Flight</option>
+                </select>
               </div>
             </div>
 

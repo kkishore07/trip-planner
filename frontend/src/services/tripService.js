@@ -94,16 +94,24 @@ export const tripService = {
       const trips = await tripService.getUserTrips();
       const duration = aiData.durationDays || 3;
       const budget = aiData.budget || 150000;
-      
-      const isMunnarOrCoimbatore = aiData.destination.toLowerCase().includes('munnar') || aiData.destination.toLowerCase().includes('coimbatore') || aiData.destination.toLowerCase().includes('pollachi');
+      const destLower = aiData.destination.toLowerCase();
+      const fromP = aiData.fromPlace || "";
+      const fromLower = fromP.toLowerCase();
+      const modeOfTransport = aiData.travelMode || "Flight";
+
+      const isMunnarRoute = destLower.includes("munnar") || (fromLower.includes("coimbatore") && destLower.includes("munnar"));
+      const isOotyRoute = destLower.includes("ooty") || (fromLower.includes("bangalore") && destLower.includes("ooty"));
+      const isJaipurRoute = destLower.includes("jaipur") || (fromLower.includes("delhi") && destLower.includes("jaipur"));
+      const isLonavalaRoute = destLower.includes("lonavala") || (fromLower.includes("mumbai") && destLower.includes("lonavala"));
 
       const newTrip = {
         id: Date.now(),
         destination: aiData.destination,
+        fromPlace: fromP,
         startDate: new Date().toISOString().split('T')[0],
         endDate: new Date(Date.now() + duration * 86400000).toISOString().split('T')[0],
         travelersCount: aiData.travelersCount || 1,
-        travelMode: isMunnarOrCoimbatore ? "Car / Roadtrip" : "Flight",
+        travelMode: modeOfTransport,
         travelPreferences: aiData.preferences || "Balanced",
         budget: Number(budget),
         totalExpense: 0,
@@ -118,7 +126,7 @@ export const tripService = {
           let suggestedTiming = "09:00 AM - 08:00 PM";
           let timelineJson = "";
 
-          if (isMunnarOrCoimbatore) {
+          if (isMunnarRoute) {
             if (dayNum === 1) {
               title = "Scenic Roadtrip from Coimbatore to Munnar";
               description = "Travel from Coimbatore through Chinnar Wildlife Sanctuary forest stretch, stop at Marayoor sandalwood forests, and explore Munnar's iconic tea gardens and viewpoints.";
@@ -151,6 +159,106 @@ export const tripService = {
                 {time: "02:30 PM", title: "Munnar Tea Museum", details: "Learn about history of tea cultivation and machinery in Munnar."},
                 {time: "04:30 PM", title: "Lakkam Waterfalls", details: "Scenic waterfall surrounded by forest. Clean and refreshing water flow."},
                 {time: "06:00 PM", title: "Return to Town / Evening Leisure", details: "Local shopping for homemade chocolates, tea, and spices."}
+              ]);
+            }
+          } else if (isOotyRoute) {
+            if (dayNum === 1) {
+              title = "Scenic Hill Roadtrip from Bangalore to Ooty";
+              description = "Travel from Bangalore through the historic city of Mysore, cross the Bandipur tiger reserve forest, and ascend to Ooty via Pykara Lake.";
+              activities = "Wildlife Spotting, Mysore Palace Visit, Boating, Pykara Waterfalls Photography";
+              restaurants = "Mylari Hotel (⭐ 4.4), Nahar Restaurant (⭐ 4.1), Earl's Secret (⭐ 4.5)";
+              attractions = "Mysore Palace, Bandipur National Park, Pykara Waterfalls, Ooty Lake";
+              suggestedTiming = "05:00 AM - 08:30 PM";
+              timelineJson = JSON.stringify([
+                {time: "05:00 AM", title: "Leave Bangalore", details: "Depart early to beat the city traffic and enjoy the cool morning drive on the Mysore Expressway."},
+                {time: "07:30 AM", title: "Breakfast at Mysore", details: "Stop at the famous Mylari Hotel (⭐ 4.4 based on Google reviews) for their legendary soft butter idlis and filter coffee."},
+                {time: "10:00 AM", title: "Bandipur National Park Drive", details: "Enter the forest stretch. Drive slow. Keep an eye out for elephants, deer, and peacocks crossing the road."},
+                {time: "12:30 PM", title: "Pykara Waterfalls & Lake", details: "Stop at Pykara for a scenic short walk to the waterfalls and optional speedboat rides on the lake."},
+                {time: "02:00 PM", title: "Reach Ooty & Lunch", details: "Arrive in Ooty. Enjoy a traditional North/South Indian lunch at Nahar Restaurant (⭐ 4.1, 8,920 reviews)."},
+                {time: "03:30 PM", title: "Ooty Botanical Garden", details: "Explore the lush 55-hectare gardens featuring rare trees, fossil trunks, and beautiful glass houses."},
+                {time: "06:00 PM", title: "Ooty Lake & Boating", details: "Relax with a quiet rowboat ride on the scenic Ooty Lake as the sun goes down."},
+                {time: "08:00 PM", title: "Dinner at Earl's Secret", details: "Dine in a gorgeous glasshouse restaurant at Earl's Secret (⭐ 4.5, 3,450 Google reviews) inside a colonial heritage hotel."}
+              ]);
+            } else {
+              title = `Day ${dayNum}: Ooty Heritage Toy Train & Coonoor Tour`;
+              description = "Take the historic UNESCO Nilgiri Mountain Railway Toy Train from Ooty to Coonoor and explore Dolphin's Nose and tea processing units.";
+              activities = "UNESCO Toy Train Ride, Tea Factory Tour, Scenic Viewpoint Hike";
+              restaurants = "Cafe Diem (⭐ 4.4), Quality Restaurant";
+              attractions = "Nilgiri Mountain Railway, Dolphin's Nose, Sim's Park, Tea Factory";
+              suggestedTiming = "08:30 AM - 06:30 PM";
+              timelineJson = JSON.stringify([
+                {time: "08:30 AM", title: "Ooty Toy Train Ride", details: "Board the famous steam Toy Train from Ooty station to Coonoor. Enjoy scenic valleys, tunnels, and stone bridges."},
+                {time: "10:30 AM", title: "Sim's Park & Botanical Walks", details: "Stroll in Sim's Park in Coonoor, showcasing unique plant species and terraced landscaping."},
+                {time: "12:00 PM", title: "Dolphin's Nose Viewpoint", details: "Drive to Dolphin's Nose for a breathtaking view of Catherine Falls and the valley."},
+                {time: "01:30 PM", title: "Lunch at Cafe Diem", details: "Enjoy vegetarian organic dishes with spectacular valley views at Cafe Diem (⭐ 4.4, 2,120 Google reviews)."},
+                {time: "03:30 PM", title: "Highfield Tea Factory", details: "Observe how tea leaves are processed and try tea tasting of fresh chocolate and masala teas."},
+                {time: "06:00 PM", title: "Return to Ooty & Leisure", details: "Stroll around Ooty Charing Cross market for local eucalyptus oil and homemade chocolates."}
+              ]);
+            }
+          } else if (isJaipurRoute) {
+            if (dayNum === 1) {
+              title = "Delhi to Jaipur - The Pink City Roadtrip";
+              description = "Drive from Delhi through Haryana to Rajasthan. Tour the spectacular Amber Fort, Jal Mahal, and finish with a traditional Rajasthani dinner show.";
+              activities = "Fort Guided Tour, Stepwell Photography, Rajasthani Folk Show, Camel Ride";
+              restaurants = "Neemrana Fort Restaurant (⭐ 4.5), Laxmi Mishthan Bhandar (LMB) (⭐ 4.0), Chokhi Dhani (⭐ 4.3)";
+              attractions = "Neemrana Fort, Amber Fort, Jal Mahal, Chokhi Dhani";
+              suggestedTiming = "06:00 AM - 09:30 PM";
+              timelineJson = JSON.stringify([
+                {time: "06:00 AM", title: "Depart Delhi", details: "Start early from Delhi to beat the Gurgaon Expressway traffic."},
+                {time: "08:30 AM", title: "Breakfast at Neemrana Fort Palace", details: "Have a royal breakfast at the stunning 15th-century Neemrana Fort Palace (⭐ 4.5 Google reviews) overlooking the hills."},
+                {time: "12:00 PM", title: "Stop at Chand Baori Stepwell", details: "Take a short detour to see Abhaneri's Chand Baori, one of the deepest and largest stepwells in India."},
+                {time: "02:00 PM", title: "Reach Jaipur & Lunch", details: "Arrive in Jaipur and check in. Head for a delicious lunch at Laxmi Mishthan Bhandar (LMB) (⭐ 4.0, 15,230 reviews) for authentic Rajasthani Thali."},
+                {time: "04:00 PM", title: "Amber Fort Tour", details: "Explore the massive Amber Fort, its beautiful Sheesh Mahal (mirror palace), and take in the panoramic mountain views."},
+                {time: "06:30 PM", title: "Sunset view at Jal Mahal", details: "Stop for photos of Jal Mahal, the floating palace, reflecting in the Mansagar Lake during sunset."},
+                {time: "08:00 PM", title: "Dinner at Chokhi Dhani", details: "Experience Rajasthani village culture, puppet shows, camel rides, and traditional dining at Chokhi Dhani (⭐ 4.3, 28,450 Google reviews)."}
+              ]);
+            } else {
+              title = `Day ${dayNum}: Jaipur City Palace & Observatory`;
+              description = "Explore Hawa Mahal, City Palace, and the Jantar Mantar observatory in Jaipur.";
+              activities = "Historical Palace Tour, Ancient Instrument Viewing, Local Crafts Shopping";
+              restaurants = "Tapri Central, Peacock Rooftop Restaurant";
+              attractions = "Hawa Mahal, City Palace, Jantar Mantar, Johari Bazaar";
+              suggestedTiming = "09:00 AM - 06:00 PM";
+              timelineJson = JSON.stringify([
+                {time: "09:00 AM", title: "Hawa Mahal Photos", details: "Visit the iconic Palace of Winds early in the morning for best lighting."},
+                {time: "10:00 AM", title: "City Palace Museum", details: "Explore courtyards, museums, royal armory, and gorgeous doorways."},
+                {time: "12:30 PM", title: "Jantar Mantar Observatory", details: "Learn about the UNESCO-listed astronomical sundials and instruments."},
+                {time: "02:00 PM", title: "Peacock Rooftop Lunch", details: "Enjoy local Rajasthani curries at Peacock Rooftop Restaurant (⭐ 4.4)."},
+                {time: "03:30 PM", title: "Johari Bazaar Shopping", details: "Shop for traditional blue pottery, jaipuri quilts, and bandhani clothing."},
+                {time: "05:30 PM", title: "Tea at Tapri Central", details: "Cozy rooftop tea bar Tapri (⭐ 4.6) for chai, bun-maska, and sunset views."}
+              ]);
+            }
+          } else if (isLonavalaRoute) {
+            if (dayNum === 1) {
+              title = "Mumbai to Lonavala - Western Ghats Monsoon Escape";
+              description = "Drive from Mumbai via the scenic Pune Expressway to the mist-filled hills of Lonavala. Explore historic rock-cut caves and view gorgeous waterfalls.";
+              activities = "Expressway Scenic Drive, Cave Exploration, Viewpoint Trekking, Fudge Tasting";
+              restaurants = "Sunny Da Dhaba (⭐ 4.1), Cooper's Fudge (⭐ 4.3), German Bakery Lonavala";
+              attractions = "Khandala Ghat, Karla Caves, Tiger's Point, Bhushi Dam";
+              suggestedTiming = "07:00 AM - 08:30 PM";
+              timelineJson = JSON.stringify([
+                {time: "07:00 AM", title: "Leave Mumbai", details: "Start from Mumbai and climb the scenic Mumbai-Pune Expressway."},
+                {time: "08:30 AM", title: "Breakfast at Sunny Da Dhaba", details: "Stop at Sunny Da Dhaba (⭐ 4.1 Google reviews) for hot stuffed parathas and sweet lassi."},
+                {time: "10:00 AM", title: "Karla Caves Exploration", details: "Hike up to the ancient 2nd century BC Buddhist rock-cut shrines, featuring grand pillars and arched ceilings."},
+                {time: "12:00 PM", title: "Tiger's Point Viewpoint", details: "Head to Tiger's Point for a stunning view of steep valleys, waterfalls, and mist-laden mountains. Enjoy hot corn pakodas."},
+                {time: "01:30 PM", title: "Lunch at Cooper's Fudge", details: "Enjoy delicious lunch followed by purchase of their legendary chocolate walnut fudge at Cooper's Fudge (⭐ 4.3, 4,920 reviews)."},
+                {time: "03:30 PM", title: "Bhushi Dam", details: "Splash around and relax on the steps of Bhushi Dam with cascading water streams."},
+                {time: "05:30 PM", title: "Sunset at Lion's Point", details: "Watch the sunset paint the Western Ghats orange from Lion's Point viewpoint."},
+                {time: "07:30 PM", title: "Return Journey to Mumbai", details: "Drive back to Mumbai via the Expressway, arriving by 9:00 PM."}
+              ]);
+            } else {
+              title = `Day ${dayNum}: Lonavala Nature & Fort Sightseeing`;
+              description = "Visit Lohagad Fort and Bhaja Caves for ancient architectural scenery.";
+              activities = "Fort Trekking, Cave Photography, Lake Sightseeing";
+              restaurants = "Rama Krishna Restaurant, Kinara Village Dhaba";
+              attractions = "Lohagad Fort, Bhaja Caves, Pawna Lake";
+              suggestedTiming = "09:00 AM - 05:00 PM";
+              timelineJson = JSON.stringify([
+                {time: "08:30 AM", title: "Breakfast at Stay", details: "Enjoy hot maharashtrian poha or misal pav."},
+                {time: "09:30 AM", title: "Lohagad Fort Trek", details: "Trek up to Lohagad Fort, the iron fort of Shivaji. Enjoy stunning mountain trails."},
+                {time: "01:00 PM", title: "Lunch at Rama Krishna", details: "Delicious Punjabi and South Indian food in Lonavala Town."},
+                {time: "02:30 PM", title: "Bhaja Caves visit", details: "Explore Buddhist caves with beautiful stupas and carvings."},
+                {time: "04:30 PM", title: "Pawna Lake Sunset", details: "Sit by the peaceful shores of Pawna Lake for a beautiful sunset view."}
               ]);
             }
           } else {

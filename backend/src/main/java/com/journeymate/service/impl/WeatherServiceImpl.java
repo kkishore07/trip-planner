@@ -19,7 +19,7 @@ public class WeatherServiceImpl implements WeatherService {
 
     @Override
     public WeatherDTOs.WeatherResponse getWeatherForCity(String city) {
-        String queryCity = (city == null || city.isBlank()) ? "Paris" : city.trim();
+        String queryCity = (city == null || city.isBlank()) ? "Munnar" : city.trim();
 
         // Cached or mock generated
         WeatherCache cache = weatherCacheRepository.findByCityIgnoreCase(queryCity)

@@ -14,7 +14,7 @@ public class WeatherController {
     private final WeatherService weatherService;
 
     @GetMapping
-    public ResponseEntity<WeatherDTOs.WeatherResponse> getWeather(@RequestParam(required = false, defaultValue = "Paris") String city) {
+    public ResponseEntity<WeatherDTOs.WeatherResponse> getWeather(@RequestParam(required = false, defaultValue = "Munnar") String city) {
         return ResponseEntity.ok(weatherService.getWeatherForCity(city));
     }
 }
