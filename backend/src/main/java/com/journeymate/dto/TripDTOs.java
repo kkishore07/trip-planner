@@ -26,6 +26,11 @@ public class TripDTOs {
         private String travelMode = "Flight";
         private String travelPreferences = "Balanced";
         private BigDecimal budget = BigDecimal.ZERO;
+        
+        private BigDecimal fuelMileage;
+        private BigDecimal fuelPrice;
+        private BigDecimal estimatedDistance;
+        private List<ItineraryResponse> itineraries;
     }
 
     @Data
@@ -39,6 +44,9 @@ public class TripDTOs {
         private String travelMode;
         private String travelPreferences;
         private BigDecimal budget;
+        private BigDecimal fuelMileage;
+        private BigDecimal fuelPrice;
+        private BigDecimal estimatedDistance;
         private BigDecimal totalExpense;
         private BigDecimal remainingBudget;
         private List<ItineraryResponse> itineraries;
@@ -56,6 +64,9 @@ public class TripDTOs {
         private String attractions;
         private String suggestedTiming;
         private BigDecimal estimatedCost;
+        private String climateInfo;
+        private String skipSuggestions;
+        private String bikerWarnings;
         private String timelineJson;
     }
 

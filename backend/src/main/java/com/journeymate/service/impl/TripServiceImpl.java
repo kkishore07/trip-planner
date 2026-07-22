@@ -44,6 +44,9 @@ public class TripServiceImpl implements TripService {
                 .travelMode(request.getTravelMode())
                 .travelPreferences(request.getTravelPreferences())
                 .budget(request.getBudget() != null ? request.getBudget() : BigDecimal.ZERO)
+                .fuelMileage(request.getFuelMileage() != null ? request.getFuelMileage() : (request.getTravelMode() != null && request.getTravelMode().equalsIgnoreCase("Bike") ? new BigDecimal("40.00") : new BigDecimal("15.00")))
+                .fuelPrice(request.getFuelPrice() != null ? request.getFuelPrice() : new BigDecimal("103.00"))
+                .estimatedDistance(request.getEstimatedDistance() != null ? request.getEstimatedDistance() : new BigDecimal("300.00"))
                 .totalExpense(BigDecimal.ZERO)
                 .build();
 
@@ -82,6 +85,38 @@ public class TripServiceImpl implements TripService {
         if (request.getBudget() != null) {
             trip.setBudget(request.getBudget());
         }
+        if (request.getFuelMileage() != null) {
+            trip.setFuelMileage(request.getFuelMileage());
+        }
+        if (request.getFuelPrice() != null) {
+            trip.setFuelPrice(request.getFuelPrice());
+        }
+        if (request.getEstimatedDistance() != null) {
+            trip.setEstimatedDistance(request.getEstimatedDistance());
+        }
+
+        if (request.getItineraries() != null) {
+            for (TripDTOs.ItineraryResponse itReq : request.getItineraries()) {
+                if (itReq.getId() != null) {
+                    trip.getItineraries().stream()
+                        .filter(item -> item.getId().equals(itReq.getId()))
+                        .findFirst()
+                        .ifPresent(item -> {
+                            item.setTitle(itReq.getTitle());
+                            item.setDescription(itReq.getDescription());
+                            item.setActivities(itReq.getActivities());
+                            item.setRestaurants(itReq.getRestaurants());
+                            item.setAttractions(itReq.getAttractions());
+                            item.setSuggestedTiming(itReq.getSuggestedTiming());
+                            item.setEstimatedCost(itReq.getEstimatedCost());
+                            if (itReq.getClimateInfo() != null) item.setClimateInfo(itReq.getClimateInfo());
+                            if (itReq.getSkipSuggestions() != null) item.setSkipSuggestions(itReq.getSkipSuggestions());
+                            if (itReq.getBikerWarnings() != null) item.setBikerWarnings(itReq.getBikerWarnings());
+                            if (itReq.getTimelineJson() != null) item.setTimelineJson(itReq.getTimelineJson());
+                        });
+                }
+            }
+        }
 
         Trip updated = tripRepository.save(trip);
         return mapToTripResponse(updated);
@@ -102,6 +137,7 @@ public class TripServiceImpl implements TripService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
 
         int duration = request.getDurationDays() != null ? request.getDurationDays() : 3;
+        BigDecimal distance = calculateDistance(request.getDestination(), request.getFromPlace(), duration);
 
         Trip trip = Trip.builder()
                 .user(user)
@@ -113,6 +149,9 @@ public class TripServiceImpl implements TripService {
                 .travelMode(request.getTravelMode() != null ? request.getTravelMode() : "Flight")
                 .travelPreferences(request.getPreferences())
                 .budget(request.getBudget() != null ? request.getBudget() : new BigDecimal("1000.00"))
+                .fuelMileage(request.getTravelMode() != null && request.getTravelMode().equalsIgnoreCase("Bike") ? new BigDecimal("40.00") : new BigDecimal("15.00"))
+                .fuelPrice(new BigDecimal("103.00"))
+                .estimatedDistance(distance)
                 .totalExpense(BigDecimal.ZERO)
                 .build();
 
@@ -121,6 +160,25 @@ public class TripServiceImpl implements TripService {
 
         Trip savedTrip = tripRepository.save(trip);
         return mapToTripResponse(savedTrip);
+    }
+
+    private BigDecimal calculateDistance(String destination, String fromPlace, int duration) {
+        String destLower = destination != null ? destination.toLowerCase() : "";
+        String fromLower = fromPlace != null ? fromPlace.toLowerCase() : "";
+        
+        if (destLower.contains("munnar")) {
+            return BigDecimal.valueOf(155 * 2 + (duration > 1 ? (duration - 1) * 60 : 0));
+        } else if (destLower.contains("valparai")) {
+            return BigDecimal.valueOf(100 * 2 + (duration > 1 ? (duration - 1) * 50 : 0));
+        } else if (destLower.contains("ooty")) {
+            return BigDecimal.valueOf(270 * 2 + (duration > 1 ? (duration - 1) * 60 : 0));
+        } else if (destLower.contains("jaipur")) {
+            return BigDecimal.valueOf(270 * 2 + (duration > 1 ? (duration - 1) * 45 : 0));
+        } else if (destLower.contains("lonavala")) {
+            return BigDecimal.valueOf(85 * 2 + (duration > 1 ? (duration - 1) * 40 : 0));
+        }
+        
+        return BigDecimal.valueOf(300.00);
     }
 
     private TripDTOs.TripResponse mapToTripResponse(Trip trip) {
@@ -134,6 +192,9 @@ public class TripServiceImpl implements TripService {
         response.setTravelMode(trip.getTravelMode());
         response.setTravelPreferences(trip.getTravelPreferences());
         response.setBudget(trip.getBudget());
+        response.setFuelMileage(trip.getFuelMileage());
+        response.setFuelPrice(trip.getFuelPrice());
+        response.setEstimatedDistance(trip.getEstimatedDistance());
         response.setTotalExpense(trip.getTotalExpense());
 
         BigDecimal remaining = (trip.getBudget() != null ? trip.getBudget() : BigDecimal.ZERO)
@@ -152,6 +213,9 @@ public class TripServiceImpl implements TripService {
                 itemRes.setAttractions(it.getAttractions());
                 itemRes.setSuggestedTiming(it.getSuggestedTiming());
                 itemRes.setEstimatedCost(it.getEstimatedCost());
+                itemRes.setClimateInfo(it.getClimateInfo());
+                itemRes.setSkipSuggestions(it.getSkipSuggestions());
+                itemRes.setBikerWarnings(it.getBikerWarnings());
                 itemRes.setTimelineJson(it.getTimelineJson());
                 return itemRes;
             }).collect(Collectors.toList()));

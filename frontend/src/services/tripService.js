@@ -114,6 +114,9 @@ export const tripService = {
         travelMode: modeOfTransport,
         travelPreferences: aiData.preferences || "Balanced",
         budget: Number(budget),
+        fuelMileage: modeOfTransport === 'Bike' ? 40.0 : 15.0,
+        fuelPrice: 103.0,
+        estimatedDistance: 300.0,
         totalExpense: 0,
         remainingBudget: Number(budget),
         itineraries: Array.from({ length: duration }).map((_, i) => {
@@ -302,6 +305,34 @@ export const tripService = {
       trips.unshift(newTrip);
       localStorage.setItem('journeymate_trips', JSON.stringify(trips));
       return newTrip;
+    }
+  },
+
+  updateTrip: async (id, tripData) => {
+    try {
+      const response = await api.put(`/trips/${id}`, tripData);
+      return response.data;
+    } catch (err) {
+      let trips = await tripService.getUserTrips();
+      const idx = trips.findIndex(t => t.id === Number(id));
+      if (idx !== -1) {
+        let updatedItineraries = trips[idx].itineraries;
+        if (tripData.itineraries) {
+          updatedItineraries = trips[idx].itineraries.map(originalIt => {
+            const reqIt = tripData.itineraries.find(it => it.id === originalIt.id || it.dayNumber === originalIt.dayNumber);
+            return reqIt ? { ...originalIt, ...reqIt } : originalIt;
+          });
+        }
+        trips[idx] = {
+          ...trips[idx],
+          ...tripData,
+          itineraries: updatedItineraries,
+          remainingBudget: (tripData.budget || trips[idx].budget) - (trips[idx].totalExpense || 0)
+        };
+        localStorage.setItem('journeymate_trips', JSON.stringify(trips));
+        return trips[idx];
+      }
+      throw err;
     }
   },
 

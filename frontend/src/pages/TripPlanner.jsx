@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { tripService } from '../services/tripService';
-import { Compass, Sparkles, Calendar, DollarSign, Users, Plane, Heart, ArrowRight, MapPin, Car } from 'lucide-react';
+import { Compass, Sparkles, Calendar, IndianRupee, Users, Plane, Heart, ArrowRight, MapPin, Car, Bike } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export const TripPlanner = () => {
@@ -144,13 +144,18 @@ export const TripPlanner = () => {
                 Mode of Transportation
               </label>
               <div className="relative">
-                <Car className="w-5 h-5 absolute left-3.5 top-3.5 text-gray-400" />
+                {aiForm.travelMode === 'Bike' ? (
+                  <Bike className="w-5 h-5 absolute left-3.5 top-3.5 text-gray-400" />
+                ) : (
+                  <Car className="w-5 h-5 absolute left-3.5 top-3.5 text-gray-400" />
+                )}
                 <select
                   value={aiForm.travelMode}
                   onChange={(e) => setAiForm({ ...aiForm, travelMode: e.target.value })}
                   className="w-full pl-11 pr-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 text-gray-900 dark:text-white"
                 >
                   <option value="Car / Roadtrip">🚗 Car / Roadtrip</option>
+                  <option value="Bike">🏍️ Bike</option>
                   <option value="Bus">🚌 Bus</option>
                   <option value="Train">🚂 Train</option>
                   <option value="Flight">✈️ Flight</option>
@@ -198,7 +203,7 @@ export const TripPlanner = () => {
                 Estimated Budget (₹ INR)
               </label>
               <div className="relative">
-                <DollarSign className="w-5 h-5 absolute left-3.5 top-3.5 text-gray-400" />
+                <IndianRupee className="w-5 h-5 absolute left-3.5 top-3.5 text-gray-400" />
                 <input
                   type="number"
                   min="100"
@@ -275,6 +280,7 @@ export const TripPlanner = () => {
                 <option value="Flight">Flight</option>
                 <option value="Train">Train</option>
                 <option value="Car / Roadtrip">Car / Roadtrip</option>
+                <option value="Bike">Bike</option>
                 <option value="Cruise">Cruise</option>
               </select>
             </div>

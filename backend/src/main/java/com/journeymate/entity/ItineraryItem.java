@@ -44,6 +44,12 @@ public class ItineraryItem {
 
     private BigDecimal estimatedCost;
 
+    private String climateInfo;
+
+    private String skipSuggestions;
+
+    private String bikerWarnings;
+
     @Column(length = 4000)
     private String timelineJson;
 

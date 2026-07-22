@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { useCurrency } from '../context/CurrencyContext';
 import { StatCard } from '../components/StatCard';
 import { SkeletonLoader } from '../components/SkeletonLoader';
-import { Compass, MapPin, DollarSign, Calendar, Sparkles, Plus, ArrowRight, PieChart as PieIcon, Trash2 } from 'lucide-react';
+import { Compass, MapPin, IndianRupee, Calendar, Sparkles, Plus, ArrowRight, PieChart as PieIcon, Trash2 } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
 export const Dashboard = () => {
@@ -92,7 +92,7 @@ export const Dashboard = () => {
           title="Total Travel Budget"
           value={formatAmount(totalBudget)}
           subtitle="Allocated funds"
-          icon={DollarSign}
+          icon={IndianRupee}
           color="purple"
         />
         <StatCard

@@ -42,6 +42,15 @@ public class Trip {
 
     private BigDecimal budget;
 
+    @Column(precision = 5, scale = 2)
+    private BigDecimal fuelMileage;
+
+    @Column(precision = 6, scale = 2)
+    private BigDecimal fuelPrice;
+
+    @Column(precision = 8, scale = 2)
+    private BigDecimal estimatedDistance;
+
     @Column(precision = 10, scale = 2)
     private BigDecimal totalExpense;
 
