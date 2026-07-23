@@ -1,10 +1,9 @@
 services:
   - type: web
     name: journeymate-backend
-    env: java
-    rootDir: backend
-    buildCommand: chmod +x mvnw && ./mvnw clean package -DskipTests
-    startCommand: java -jar target/journeymate-backend-1.0.0.jar
+    env: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
     plan: free
     region: singapore
     envVars:

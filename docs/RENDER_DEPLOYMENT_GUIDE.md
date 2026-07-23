@@ -1,145 +1,80 @@
-# 🌐 Deploying JourneyMate AI: Native Java Backend on Render + Frontend on Vercel
+# 🌐 Deploying JourneyMate AI Backend on Render + Frontend on Vercel
 
-This guide provides step-by-step instructions to deploy your **Spring Boot 3 (Java 21) Backend** natively (without Docker) and **PostgreSQL Database** on [Render](https://render.com), and connect them to your **Vercel** frontend.
+This guide provides step-by-step instructions to deploy your **Spring Boot 3 (Java 21) Backend** and **PostgreSQL Database** on [Render](https://render.com), and connect them to your **Vercel** frontend.
 
 ---
 
 ## 🏗️ Architecture Overview
 
 - **Frontend**: Hosted on **Vercel** (`https://<your-app>.vercel.app`)
-- **Backend API**: Native Java Spring Boot service on **Render** (`https://<your-backend>.onrender.com`)
-- **Database**: Managed **PostgreSQL** database on **Render**.
+- **Backend API**: Cloud-built Spring Boot Web Service on **Render** (`https://<your-backend>.onrender.com`)
+- **Database**: Managed **PostgreSQL** on **Render**.
+
+> 💡 **Note**: Render builds your Java backend automatically in the cloud. You **do not** need Docker installed or running on your local computer!
 
 ---
 
 ## 📑 Quick Table of Contents
 
-1. [Step 1: Deploy PostgreSQL Database on Render](#step-1-deploy-postgresql-database-on-render)
-2. [Step 2: Deploy Spring Boot Backend on Render (Native Java)](#step-2-deploy-spring-boot-backend-on-render-native-java)
-3. [Step 3: Connect Vercel Frontend to Render Backend](#step-3-connect-vercel-frontend-to-render-backend)
-4. [Step 4: Verification & Testing](#step-4-verification--testing)
+1. [Option A: 1-Click Render Blueprint Deployment (Recommended)](#option-a-1-click-render-blueprint-deployment-recommended)
+2. [Option B: Manual Render Web Service Creation](#option-b-manual-render-web-service-creation)
+3. [Connecting Vercel Frontend to Render Backend](#connecting-vercel-frontend-to-render-backend)
 
 ---
 
-## 🐘 Step 1: Deploy PostgreSQL Database on Render
+## 🚀 Option A: 1-Click Render Blueprint Deployment (Recommended)
 
-1. Log in to [Render Dashboard](https://dashboard.render.com).
-2. Click **New +** -> **PostgreSQL**.
-3. Fill in the parameters:
-   - **Name**: `journeymate-db`
-   - **Database**: `journeymatedb`
-   - **User**: `journeymate_user`
-   - **Region**: Choose closest to your users (e.g., *Singapore* or *US East*).
-   - **Instance Type**: Select **Free**.
-4. Click **Create Database**.
-5. Once created, copy the **Internal Database URL** (e.g., `postgresql://journeymate_user:password@dpg-xxx:5432/journeymatedb`).
-
----
-
-## 🚀 Step 2: Deploy Spring Boot Backend on Render (Native Java)
-
-### Method A: 1-Click Blueprint (Recommended)
-
-1. Ensure your latest changes are pushed to **GitHub**.
-2. On Render Dashboard, click **New +** -> **Blueprint**.
-3. Connect your **GitHub repository** (`trip-planner`).
-4. Render will automatically read `render.yaml` and provision the **Native Java Web Service** and **PostgreSQL Database**.
-5. Click **Apply**.
+1. Push all latest changes to **GitHub**:
+   ```bash
+   git add .
+   git commit -m "fix: update render.yaml blueprint"
+   git push origin main
+   ```
+2. Open [Render Dashboard](https://dashboard.render.com).
+3. Click **New +** -> **Blueprint**.
+4. Select your **GitHub repository** (`trip-planner`).
+5. Render will automatically read `render.yaml` and provision both:
+   - **PostgreSQL Database** (`journeymate-postgres`)
+   - **Spring Boot Web Service** (`journeymate-backend`)
+6. Click **Apply**. Render will handle building and launching your backend automatically!
 
 ---
 
-### Method B: Manual Web Service Creation
+## 🛠️ Option B: Manual Render Web Service Creation
 
-1. On Render Dashboard, click **New +** -> **Web Service**.
-2. Connect your GitHub repository (`trip-planner`).
-3. Configure the service settings:
+If you prefer deploying services manually without Blueprint:
+
+### Step 1: Create Database
+1. On Render Dashboard, click **New +** -> **PostgreSQL**.
+2. **Name**: `journeymate-db` | **Database**: `journeymatedb` | **User**: `journeymate_user`
+3. Click **Create Database** and copy the **Internal Database URL**.
+
+### Step 2: Create Web Service
+1. Click **New +** -> **Web Service**.
+2. Connect your GitHub repository.
+3. Configure settings:
    - **Name**: `journeymate-backend`
    - **Root Directory**: `backend`
-   - **Environment / Runtime**: **`Java`** (⚠️ *Crucial: Render defaults to Node if not changed!*)
-   - **Build Command**: `chmod +x mvnw && ./mvnw clean package -DskipTests`
-   - **Start Command**: `java -jar target/journeymate-backend-1.0.0.jar`
-   - **Region**: Same region as your database.
-   - **Instance Type**: **Free**.
-
-4. Scroll down to **Environment Variables** and add:
-
-| Key | Value / Example | Notes |
-|---|---|---|
-| `SPRING_DATASOURCE_URL` | `jdbc:postgresql://dpg-xxx-a:5432/journeymatedb` | From Render PostgreSQL Internal Connection String (replace `postgresql://` with `jdbc:postgresql://`) |
-| `SPRING_DATASOURCE_USERNAME` | `journeymate_user` | Database user |
-| `SPRING_DATASOURCE_PASSWORD` | `<your-db-password>` | Database password |
-| `SPRING_JPA_PLATFORM` | `org.hibernate.dialect.PostgreSQLDialect` | PostgreSQL dialect for Hibernate |
-| `JWT_SECRET` | `404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970` | Secure JWT secret key |
-| `OPENAI_API_KEY` | `sk-...` | Optional for live AI generation |
-
+   - **Environment / Runtime**: `Docker`
+   - **Dockerfile Path**: `backend/Dockerfile`
+4. Add Environment Variables:
+   - `SPRING_DATASOURCE_URL`: `jdbc:postgresql://<internal-db-host>:5432/journeymatedb`
+   - `SPRING_DATASOURCE_USERNAME`: `journeymate_user`
+   - `SPRING_DATASOURCE_PASSWORD`: `<your-db-password>`
+   - `SPRING_JPA_PLATFORM`: `org.hibernate.dialect.PostgreSQLDialect`
+   - `JWT_SECRET`: `404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970`
 5. Click **Create Web Service**.
-6. Render will automatically execute the Maven wrapper and start the service on `$PORT`. Once live, Render will provide your backend URL:
-   `https://journeymate-backend.onrender.com`
 
 ---
 
-## 🛠️ Troubleshooting: `mvn: command not found`
+## ⚡ Connecting Vercel Frontend to Render Backend
 
-If you encounter `bash: line 1: mvn: command not found` on Render:
-1. **Change Environment**: In Render Dashboard -> Web Service -> **Settings** -> **Environment**, change `Node` to **`Java`**.
-2. **Use Maven Wrapper Command**: Set your Build Command to:
-   ```bash
-   chmod +x mvnw && ./mvnw clean package -DskipTests
-   ```
-3. **Redeploy**: Click **Manual Deploy** -> **Clear build cache & deploy**.
-
----
-
-## ⚡ Step 3: Connect Vercel Frontend to Render Backend
-
-You have **two options** to connect your Vercel frontend to your Render backend:
-
-### Option 1: Vercel Environment Variable (Recommended)
-
-1. Go to your project on [Vercel Dashboard](https://vercel.com).
-2. Go to **Settings** -> **Environment Variables**.
-3. Add a new variable:
+1. In your **Vercel Dashboard** -> **Settings** -> **Environment Variables**.
+2. Add:
    - **Key**: `VITE_API_BASE_URL`
    - **Value**: `https://<your-render-backend-name>.onrender.com/api`
-4. Click **Save**.
-5. Go to **Deployments** -> Click **Redeploy** on your latest deployment.
+3. Go to **Deployments** -> Click **Redeploy**.
 
 ---
 
-### Option 2: Vercel Rewrites (`vercel.json`)
-
-1. Open [frontend/vercel.json](file:///d:/trip%20planner/frontend/vercel.json).
-2. Replace `YOUR-RENDER-APP-NAME` with your actual Render service name:
-   ```json
-   {
-     "rewrites": [
-       {
-         "source": "/api/:path*",
-         "destination": "https://journeymate-backend.onrender.com/api/:path*"
-       },
-       {
-         "source": "/(.*)",
-         "destination": "/index.html"
-       }
-     ]
-   }
-   ```
-3. Push to GitHub, and Vercel will automatically redeploy.
-
----
-
-## ✅ Step 4: Verification & Testing
-
-1. **Check Render Logs**: View the live deployment log in Render Dashboard. Look for:
-   ```
-   Started JourneymateBackendApplication in X.XXX seconds
-   ```
-2. **Open Vercel App**:
-   Navigate to your Vercel URL (`https://<your-app>.vercel.app`).
-   - Log in with demo credentials or register a new user:
-     - Username: `demo_user` | Password: `user123`
-   - Test itinerary generation, expenses, and travel tools!
-
----
-
-🎉 **Congratulations! Your full-stack JourneyMate AI application is running natively on Render + Vercel!**
+🎉 **Congratulations! Your full-stack JourneyMate AI application is running on Render + Vercel!**
