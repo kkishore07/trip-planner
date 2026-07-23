@@ -10,7 +10,6 @@ spring:
   datasource:
     # Default to H2 for instant execution; can be overridden by ENV for PostgreSQL
     url: ${SPRING_DATASOURCE_URL:jdbc:h2:mem:journeymatedb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
-    driver-class-name: ${SPRING_DATASOURCE_DRIVER:org.h2.Driver}
     username: ${SPRING_DATASOURCE_USERNAME:sa}
     password: ${SPRING_DATASOURCE_PASSWORD:}
 
