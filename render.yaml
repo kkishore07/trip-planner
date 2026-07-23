@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: journeymate-backend
+    env: java
+    rootDir: backend
+    buildCommand: chmod +x mvnw && ./mvnw clean package -DskipTests
+    startCommand: java -jar target/journeymate-backend-1.0.0.jar
+    plan: free
+    region: singapore
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: journeymate-postgres
+          property: connectionString
+      - key: SPRING_JPA_PLATFORM
+        value: org.hibernate.dialect.PostgreSQLDialect
+      - key: JWT_SECRET
+        generateValue: true
+      - key: OPENAI_API_KEY
+        sync: false
+
+databases:
+  - name: journeymate-postgres
+    databaseName: journeymatedb
+    user: journeymate_user
+    plan: free
+    region: singapore
