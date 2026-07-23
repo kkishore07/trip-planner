@@ -42,12 +42,3 @@ jobs:
           npm ci || npm install
           npm run build
 
-  docker-build-verify:
-    needs: [backend-build-test, frontend-build]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Build Docker Compose Stack
-        run: |
-          docker compose -f devops/docker-compose.yml build

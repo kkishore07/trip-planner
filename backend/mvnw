@@ -1,0 +1,41 @@
+#!/bin/sh
+# ----------------------------------------------------------------------------
+# Apache Maven Wrapper Startup Batch Script for Unix/Linux
+# ----------------------------------------------------------------------------
+
+# resolve links - $0 may be a softlink
+PRG="$0"
+
+while [ -h "$PRG" ]; do
+  ls=`ls -ld "$PRG"`
+  link=`expr "$ls" : '.*-> \(.*\)$'`
+  if expr "$link" : '/.*' > /dev/null; then
+    PRG="$link"
+  else
+    PRG=`dirname "$PRG"`/"$link"
+  fi
+done
+
+PRGDIR=`dirname "$PRG"`
+BASE_DIR=`cd "$PRGDIR" >/dev/null; pwd`
+
+# Reset option formatting
+unset MAVEN_CMD_LINE_ARGS
+
+# Find wrapper jar or use mvn if available
+WRAPPER_JAR="$BASE_DIR/.mvn/wrapper/maven-wrapper.jar"
+
+if [ -f "$WRAPPER_JAR" ]; then
+    JAVA_EXEC="java"
+    if [ -n "$JAVA_HOME" ]; then
+        JAVA_EXEC="$JAVA_HOME/bin/java"
+    fi
+    exec "$JAVA_EXEC" -jar "$WRAPPER_JAR" "$@"
+else
+    if command -v mvn >/dev/null 2>&1; then
+        exec mvn "$@"
+    else
+        echo "Error: Could not find maven-wrapper.jar or system mvn binary." >&2
+        exit 1
+    fi
+fi

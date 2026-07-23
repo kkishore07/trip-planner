@@ -26,9 +26,9 @@
 |---|---|
 | **Frontend** | React 19, Vite, Tailwind CSS, React Router v7, Axios, Recharts, Framer Motion, Lucide Icons |
 | **Backend** | Java 21, Spring Boot 3, Spring Security, JWT, Spring Data JPA, Hibernate, Apache PDFBox, Maven |
-| **Database** | PostgreSQL (Production/Docker) / Embedded H2 Database (Instant Local Dev) |
-| **DevOps & CI/CD** | Docker, Docker Compose, GitHub Actions, Jenkins, SonarCloud |
-| **Testing** | JUnit 5, Mockito, Selenium WebDriver, Apache JMeter |
+| Database | PostgreSQL (Render Production) / Embedded H2 Database (Instant Local Dev) |
+| DevOps & CI/CD | GitHub Actions, Render (Native Java), Vercel |
+| Testing | JUnit 5, Mockito, Selenium WebDriver, Apache JMeter |
 
 ---
 
@@ -55,14 +55,10 @@ d:\trip planner\
 │   │   ├── pages\              # Dashboard, TripPlanner, ItineraryView, ExpenseTracker, Weather, Admin, etc.
 │   │   ├── services\           # Axios API services with mock fallback state
 │   │   └── index.css           # Design Tokens & Glassmorphism styles
+│   ├── vercel.json             # Vercel deployment rewrites
 │   └── vite.config.js
 │
-├── devops\                     # Dockerfiles, Compose, Jenkins, SonarCloud
-│   ├── Dockerfile.backend
-│   ├── Dockerfile.frontend
-│   ├── docker-compose.yml
-│   ├── Jenkinsfile
-│   └── sonar-project.properties
+├── render.yaml                 # Render Blueprint for Native Java Web Service + PostgreSQL
 │
 ├── testing\                    # Automated Tests
 │   ├── jmeter\journeymate_load_test.jmx
@@ -71,7 +67,7 @@ d:\trip planner\
 └── docs\                       # Detailed Technical Documentation
     ├── API_DOCUMENTATION.md
     ├── DATABASE_SCHEMA.md
-    └── DEPLOYMENT_GUIDE.md
+    └── RENDER_DEPLOYMENT_GUIDE.md # Native Render + Vercel Deployment Guide
 ```
 
 ---
@@ -87,7 +83,7 @@ npm run dev
 ```
 Open [http://localhost:3000](http://localhost:3000) in your browser. The app runs seamlessly out-of-the-box with built-in mock fallback data!
 
-### Option 2: Run Full-Stack Spring Boot + React
+### Option 2: Run Full-Stack Spring Boot + React Locally
 
 ```bash
 # Terminal 1: Backend
@@ -100,11 +96,11 @@ npm install
 npm run dev
 ```
 
-### Option 3: Run via Docker Compose
+### Option 3: Deploy to Production (Render + Vercel)
 
-```bash
-docker compose -f devops/docker-compose.yml up --build
-```
+- **Frontend**: Deploy on **Vercel** (`frontend` directory).
+- **Backend API & Database**: Deploy on **Render** using native Java runtime (`render.yaml`).
+- Refer to [RENDER_DEPLOYMENT_GUIDE.md](file:///d:/trip%20planner/docs/RENDER_DEPLOYMENT_GUIDE.md) for step-by-step instructions.
 
 ---
 
